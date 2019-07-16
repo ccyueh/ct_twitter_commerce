@@ -1,9 +1,11 @@
 from app import app
-from flask import render_template
+from flask import render_template, url_for, redirect
+from app.forms import TitleForm, ContactForm, LoginForm, RegisterForm
 
 @app.route('/')
 @app.route('/index')
-def index():
+@app.route('/index/<header>', methods=['GET'])
+def index(header=''):
     products = [
         {
             'id': 1001,
@@ -30,12 +32,49 @@ def index():
             'desc': 'Great for sitting and standing on.'
         }
     ]
-    return render_template('index.html', title='Home', products=products)
+    return render_template('index.html', title='Home', products=products, header=header)
 
 @app.route('/checkout')
 def checkout():
     return render_template('checkout.html', title='Checkout')
 
-@app.route('/title')
+@app.route('/title', methods=['GET', 'POST'])
 def title():
-    return render_template('title.html', title='Change Title')
+    # create an instance of the form
+    form = TitleForm()
+
+    # write a conditional that checks if form was submitted properly
+    if form.validate_on_submit():
+        return redirect(url_for('index', header=form.title.data))
+
+    return render_template('form.html', form=form, title='Change Title')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        # TODO: setup Placeholder
+        pass
+
+    return render_template('form.html', form=form, title='Login')
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegisterForm()
+
+    if form.validate_on_submit():
+        # TODO: setup Placeholder
+        pass
+
+    return render_template('form.html', form=form, title='Register')
+
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    form = ContactForm()
+
+    if form.validate_on_submit():
+        # TODO: setup Placeholder
+        pass
+
+    return render_template('form.html', form=form, title='Contact Us')
