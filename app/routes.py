@@ -1,6 +1,7 @@
-from app import app
-from flask import render_template, url_for, redirect
+from app import app, db
+from flask import render_template, url_for, redirect, flash
 from app.forms import TitleForm, ContactForm, LoginForm, RegisterForm, PostForm
+from app.models import Post, Contact
 
 @app.route('/')
 @app.route('/index')
@@ -54,9 +55,9 @@ def login():
     form = LoginForm()
 
     if form.validate_on_submit():
-        # TODO: setup Placeholder
-        pass
-
+        flash('You are now logged in.')
+        return redirect(url_for('profile'))
+        
     return render_template('form.html', form=form, title='Login')
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -64,8 +65,8 @@ def register():
     form = RegisterForm()
 
     if form.validate_on_submit():
-        # TODO: setup Placeholder
-        pass
+        flash('Thanks for registering!')
+        return redirect(url_for('login'))
 
     return render_template('form.html', form=form, title='Register')
 
@@ -74,14 +75,22 @@ def contact():
     form = ContactForm()
 
     if form.validate_on_submit():
-        # TODO: setup Placeholder
-        pass
+        contact = Contact(
+            name = form.name.data,
+            email = form.email.data,
+            message = form.message.data
+        )
+        db.session.add(contact)
+        db.session.commit()
 
+        flash("Thanks for contacting us! We will be in touch soon.")
+
+        return redirect(url_for('contact'))
 
     return render_template('form.html', form=form, title='Contact Us')
 
 # temp variable for testing
-posts = [
+#posts = [
     {
         'post_id': 1,
         'tweet': 'My favorite suit is spades.',
@@ -97,19 +106,27 @@ posts = [
         'tweet': 'My favorite drink is coffee.',
         'date_posted': '7/1/2019'
     },\
-]
+#]
+
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
     form = PostForm()
 
     if form.validate_on_submit():
-        posts.append(
-            {
-                'post_id': len(posts) + 1,
-                'tweet': form.tweet.data,
-                'date_posted': '7/17/2019'
-            }
+        # step 1: create an instance of the db model
+        post = Post(
+            tweet = form.tweet.data
         )
 
+        # step 2: add the record to the stage
+        db.session.add(post)
+
+        # step 3: commit the stage to the db
+        db.session.commit()
+
         return redirect(url_for('profile'))
+
+    # retrieve all posts and pass into view
+    posts = Post.query.all()
+
     return render_template('profile.html', form=form, title='Profile', posts=posts)
