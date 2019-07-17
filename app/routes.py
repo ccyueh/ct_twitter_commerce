@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template, url_for, redirect
-from app.forms import TitleForm, ContactForm, LoginForm, RegisterForm
+from app.forms import TitleForm, ContactForm, LoginForm, RegisterForm, PostForm
 
 @app.route('/')
 @app.route('/index')
@@ -77,4 +77,39 @@ def contact():
         # TODO: setup Placeholder
         pass
 
+
     return render_template('form.html', form=form, title='Contact Us')
+
+# temp variable for testing
+posts = [
+    {
+        'post_id': 1,
+        'tweet': 'My favorite suit is spades.',
+        'date_posted': '7/17/2019'
+    },
+    {
+        'post_id': 2,
+        'tweet': 'My favorite color is green.',
+        'date_posted': '7/10/2019'
+    },
+    {
+        'post_id': 3,
+        'tweet': 'My favorite drink is coffee.',
+        'date_posted': '7/1/2019'
+    },\
+]
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
+    form = PostForm()
+
+    if form.validate_on_submit():
+        posts.append(
+            {
+                'post_id': len(posts) + 1,
+                'tweet': form.tweet.data,
+                'date_posted': '7/17/2019'
+            }
+        )
+
+        return redirect(url_for('profile'))
+    return render_template('profile.html', form=form, title='Profile', posts=posts)

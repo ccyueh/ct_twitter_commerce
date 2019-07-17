@@ -1,0 +1,35 @@
+{% import 'bootstrap/wtf.html' as wtf %}
+{% extends 'base.html' %}
+
+{% block app_content %}
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card">
+        <img src="http://placehold.it/250x250" alt="Placeholder" class="card-img">
+        <div class="card-title">Max Smith</div>
+        <div class="card-subtitle">@maxsmith</div>
+        <div class="card-text">
+          <p>This is a biography.</p>
+        </div>
+        <button class="btn btn-primary">Follow</button>
+      </div>
+    </div> <!-- ends col 4 for profile info -->
+
+    <div class="col-md-8">
+      <div class="card">
+        {{ wtf.quick_form(form) }}
+      </div>
+
+      {% for post in posts %}
+        <div class="card small-margin">
+          <img src="http://placehold.it/25x25" alt="Profile Pic" class="post-img">
+          <div class="card-title tweet">{{ post.tweet }}</div>
+          <div class="card-subtitle date">{{ post.date_posted }}</div>
+          <div class="card-subtitle handle">@maxsmith</div>
+        </div>
+      {% endfor %}
+    </div> <!-- ends row 8 for posts sections -->
+
+  </div> <!-- ends row for info and posts -->
+
+{% endblock %}
