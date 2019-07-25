@@ -8,4 +8,8 @@ class Config():
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # uri for sqlite database
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'app.db')
+    #SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'app.db')
+
+    # uri for postgres database - connect to local created database
+    # postgresql://name_of_user:pass_for_user@domain_address:port/name_of_db
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'postgresql://postgres:christine@localhost:5432/twitter_commerce'
